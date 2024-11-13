@@ -6,33 +6,55 @@ target/
 !**/src/test/**/target/
 
 ### STS (Spring Tool Suite) IDE configurations ###
-.apt_generated          # Generated source files
-.classpath              # Eclipse Java build path
-.factorypath           # Annotation processor path
-.project               # Eclipse project file
-.settings              # Eclipse project settings
-.springBeans           # Spring configuration
-.sts4-cache            # STS cache directory
+# Generated source files
+.apt_generated
+# Eclipse Java build path
+.classpath
+# Annotation processor path
+.factorypath
+# Eclipse project file
+.project
+# Eclipse project settings
+.settings
+# Spring configuration
+.springBeans
+# STS cache directory
+.sts4-cache
 
 ### IntelliJ IDEA IDE configurations ###
-.idea                  # IntelliJ IDEA project settings directory
-*.iws                  # IntelliJ IDEA workspace file
-*.iml                  # IntelliJ IDEA module file
-*.ipr                  # IntelliJ IDEA project file
+# IntelliJ IDEA project settings directory
+.idea
+# IntelliJ IDEA workspace file
+*.iws
+# IntelliJ IDEA module file
+*.iml
+# IntelliJ IDEA project file
+*.ipr
 
 ### NetBeans IDE configurations ###
-/nbproject/private/    # NetBeans private project settings
-/nbbuild/              # NetBeans build directory
-/dist/                 # Distribution directory
-/nbdist/              # NetBeans distribution directory
-/.nb-gradle/           # Gradle plugin directory
-build/                 # Build directory
-!**/src/main/**/build/ # Keep main source build directories
-!**/src/test/**/build/ # Keep test source build directories
+# NetBeans private project settings
+/nbproject/private/
+# NetBeans build directory
+/nbbuild/
+# Distribution directory
+/dist/
+# NetBeans distribution directory
+/nbdist/
+# Gradle plugin directory
+/.nb-gradle/
+# Build directory
+build/
+# Keep main source build directories
+!**/src/main/**/build/
+# Keep test source build directories
+!**/src/test/**/build/
 
 ### VS Code IDE configurations ###
-.vscode/               # VS Code settings directory
+# VS Code settings directory
+.vscode/
 
 ### Compilation and runtime files ###
-out/                   # Output directory for compiled files
-*.class               # Java compiled class files
+# Output directory for compiled files
+out/
+# Java compiled class files
+*.class
