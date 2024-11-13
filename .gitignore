@@ -1,33 +1,38 @@
+# Spring Boot specific files and directories
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+### STS (Spring Tool Suite) IDE configurations ###
+.apt_generated          # Generated source files
+.classpath              # Eclipse Java build path
+.factorypath           # Annotation processor path
+.project               # Eclipse project file
+.settings              # Eclipse project settings
+.springBeans           # Spring configuration
+.sts4-cache            # STS cache directory
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+### IntelliJ IDEA IDE configurations ###
+.idea                  # IntelliJ IDEA project settings directory
+*.iws                  # IntelliJ IDEA workspace file
+*.iml                  # IntelliJ IDEA module file
+*.ipr                  # IntelliJ IDEA project file
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+### NetBeans IDE configurations ###
+/nbproject/private/    # NetBeans private project settings
+/nbbuild/              # NetBeans build directory
+/dist/                 # Distribution directory
+/nbdist/              # NetBeans distribution directory
+/.nb-gradle/           # Gradle plugin directory
+build/                 # Build directory
+!**/src/main/**/build/ # Keep main source build directories
+!**/src/test/**/build/ # Keep test source build directories
 
-### VS Code ###
-.vscode/
+### VS Code IDE configurations ###
+.vscode/               # VS Code settings directory
+
+### Compilation and runtime files ###
+out/                   # Output directory for compiled files
+*.class               # Java compiled class files
