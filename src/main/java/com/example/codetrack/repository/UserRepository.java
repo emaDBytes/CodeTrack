@@ -1,8 +1,10 @@
+// src/main/java/com/example/codetrack/repository/UserRepository.java
 package com.example.codetrack.repository;
 
 import com.example.codetrack.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 /**
  * Repository interface for User entity.
@@ -15,17 +17,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Find a user by username.
      * 
      * @param username the username to search for
-     * @return the user if found, or null if not found
+     * @return Optional containing the user if found, empty otherwise
      */
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     /**
      * Find a user by email address.
      * 
      * @param email the email to search for
-     * @return the user if found, or null if not found
+     * @return Optional containing the user if found, empty otherwise
      */
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     /**
      * Check if a username already exists.
