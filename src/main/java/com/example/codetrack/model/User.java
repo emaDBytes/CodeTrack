@@ -1,3 +1,4 @@
+// src\main\java\com\example\codetrack\model\User.java
 package com.example.codetrack.model;
 
 import jakarta.persistence.*;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Entity class representing a user in the CodeTrack application.
@@ -14,8 +17,8 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "users")
-@Data               // Lombok: Generates getters, setters, toString, equals, and hashCode methods
-@NoArgsConstructor  // Lombok: Generates a no-args constructor required by JPA
+@Data // Lombok: Generates getters, setters, toString, equals, and hashCode methods
+@NoArgsConstructor // Lombok: Generates a no-args constructor required by JPA
 @AllArgsConstructor // Lombok: Generates a constructor with all arguments
 public class User {
 
@@ -83,5 +86,42 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * Set of roles assigned to the user.
+     * Stored as a string enumeration in the database.
+     */
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
+
+    /**
+     * Adds a role to the user.
+     *
+     * @param role the role to add
+     */
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    /**
+     * Removes a role from the user.
+     *
+     * @param role the role to remove
+     */
+    public void removeRole(Role role) {
+        roles.remove(role);
+    }
+
+    /**
+     * Checks if the user has a specific role.
+     *
+     * @param role the role to check
+     * @return true if the user has the role, false otherwise
+     */
+    public boolean hasRole(Role role) {
+        return roles.contains(role);
     }
 }

@@ -1,6 +1,7 @@
 // src\test\java\com\example\codetrack\repository\UserRepositoryTest.java
 package com.example.codetrack.repository;
 
+import com.example.codetrack.model.Role;
 import com.example.codetrack.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -180,5 +181,31 @@ class UserRepositoryTest {
 
         // then
         assertThat(exists).isFalse();
+    }
+
+    /**
+     * Test persisting and retrieving user roles.
+     */
+    @Test
+    void whenSAveUserWithRoles_thenRolesPersisted() {
+        // given
+        User user = new User();
+        user.setUsername("roleuser");
+        user.setEmail("role@example.com");
+        user.setPassword("password123");
+        user.setActive(true);
+        user.addRole(Role.USER);
+        user.addRole(Role.ADMIN);
+
+        // when
+        User savedUser = entityManager.persistAndFlush(user);
+        entityManager.clear(); // Clear persistence context to force reload from database
+
+        User retrievedUser = userRepository.findById(savedUser.getId()).get();
+
+        // then
+        assertThat(retrievedUser.getRoles())
+                .hasSize(2)
+                .containsExactlyInAnyOrder(Role.USER, Role.ADMIN);
     }
 }

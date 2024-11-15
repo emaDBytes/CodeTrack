@@ -1,3 +1,4 @@
+// src\test\java\com\example\codetrack\model\UserTest.java
 package com.example.codetrack.model;
 
 import jakarta.validation.Validation;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -115,5 +118,38 @@ public class UserTest {
         user2.setUsername("user1");
 
         assertEquals(user1, user2, "Users with same ID should be equal");
+    }
+
+    /**
+     * Test adding and checking roles.
+     */
+    @Test
+    void testRoleManagement() {
+        User user = new User();
+
+        // Test adding roles
+        user.addRole(Role.USER);
+        assertThat(user.getRoles()).contains(Role.USER);
+
+        // Test hasRole method
+        assertThat(user.hasRole(Role.USER)).isTrue();
+        assertThat(user.hasRole(Role.ADMIN)).isFalse();
+
+        // Test adding multiple roles
+        user.addRole(Role.ADMIN);
+        assertThat(user.getRoles()).containsExactlyInAnyOrder(Role.USER, Role.ADMIN);
+
+        // Test removing roles
+        user.removeRole(Role.USER);
+        assertThat(user.getRoles()).containsExactly(Role.ADMIN);
+    }
+
+    /**
+     * Test role enumeration functionality.
+     */
+    @Test
+    void testRoleEnumeration() {
+        assertThat(Role.USER.getFullRoleName()).isEqualTo("ROLE_USER");
+        assertThat(Role.ADMIN.getFullRoleName()).isEqualTo("ROLE_ADMIN");
     }
 }
