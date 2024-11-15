@@ -1,11 +1,11 @@
-// src/main/java/com/example/codetrack/service/impl/UserServiceImpl.java
-package com.example.codetrack.service.impl;
+// src\main\java\io\github\emadbytes\codetrack\service\impl\UserServiceImpl.java
+package io.github.emadbytes.codetrack.service.impl;
 
-import com.example.codetrack.exception.DuplicateUserException;
-import com.example.codetrack.exception.UserNotFoundException;
-import com.example.codetrack.model.User;
-import com.example.codetrack.repository.UserRepository;
-import com.example.codetrack.service.UserService;
+import io.github.emadbytes.codetrack.exception.DuplicateUserException;
+import io.github.emadbytes.codetrack.exception.UserNotFoundException;
+import io.github.emadbytes.codetrack.model.User;
+import io.github.emadbytes.codetrack.repository.UserRepository;
+import io.github.emadbytes.codetrack.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

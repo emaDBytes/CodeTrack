@@ -1,4 +1,5 @@
-package com.example.codetrack.exception;
+// src\main\java\io\github\emadbytes\codetrack\exception\UserNotFoundException.java
+package io.github.emadbytes.codetrack.exception;
 
 /**
  * Exception thrown when attempting to operate on a user that doesn't exist.

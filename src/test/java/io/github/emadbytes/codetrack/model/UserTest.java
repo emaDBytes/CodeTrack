@@ -1,9 +1,10 @@
-// src\test\java\com\example\codetrack\model\UserTest.java
-package com.example.codetrack.model;
+// src\test\java\io\github\emadbytes\codetrack\model\UserTest.java
+package io.github.emadbytes.codetrack.model;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -129,7 +130,7 @@ public class UserTest {
 
         // Test adding roles
         user.addRole(Role.USER);
-        assertThat(user.getRoles()).contains(Role.USER);
+        Assertions.assertThat(user.getRoles()).contains(Role.USER);
 
         // Test hasRole method
         assertThat(user.hasRole(Role.USER)).isTrue();
@@ -137,11 +138,11 @@ public class UserTest {
 
         // Test adding multiple roles
         user.addRole(Role.ADMIN);
-        assertThat(user.getRoles()).containsExactlyInAnyOrder(Role.USER, Role.ADMIN);
+        Assertions.assertThat(user.getRoles()).containsExactlyInAnyOrder(Role.USER, Role.ADMIN);
 
         // Test removing roles
         user.removeRole(Role.USER);
-        assertThat(user.getRoles()).containsExactly(Role.ADMIN);
+        Assertions.assertThat(user.getRoles()).containsExactly(Role.ADMIN);
     }
 
     /**

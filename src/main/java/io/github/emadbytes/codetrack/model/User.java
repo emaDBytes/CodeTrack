@@ -1,5 +1,5 @@
-// src\main\java\com\example\codetrack\model\User.java
-package com.example.codetrack.model;
+// src\main\java\io\github\emadbytes\codetrack\model\User.java
+package io.github.emadbytes.codetrack.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

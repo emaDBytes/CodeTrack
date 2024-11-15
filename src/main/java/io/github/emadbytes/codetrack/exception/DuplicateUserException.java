@@ -1,4 +1,5 @@
-package com.example.codetrack.exception;
+// src\main\java\io\github\emadbytes\codetrack\exception\DuplicateUserException.java
+package io.github.emadbytes.codetrack.exception;
 
 /**
  * Exception thrown when attempting to create a user with existing username or

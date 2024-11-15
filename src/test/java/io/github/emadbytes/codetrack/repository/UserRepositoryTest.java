@@ -1,8 +1,9 @@
-// src\test\java\com\example\codetrack\repository\UserRepositoryTest.java
-package com.example.codetrack.repository;
+// src\test\java\io\github\emadbytes\codetrack\repository\UserRepositoryTest.java
+package io.github.emadbytes.codetrack.repository;
 
-import com.example.codetrack.model.Role;
-import com.example.codetrack.model.User;
+import io.github.emadbytes.codetrack.model.Role;
+import io.github.emadbytes.codetrack.model.User;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,7 +205,7 @@ class UserRepositoryTest {
         User retrievedUser = userRepository.findById(savedUser.getId()).get();
 
         // then
-        assertThat(retrievedUser.getRoles())
+        Assertions.assertThat(retrievedUser.getRoles())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(Role.USER, Role.ADMIN);
     }

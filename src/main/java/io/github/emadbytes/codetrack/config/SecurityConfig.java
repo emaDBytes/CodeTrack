@@ -1,5 +1,5 @@
-// src/main/java/com/example/codetrack/config/SecurityConfig.java
-package com.example.codetrack.config;
+// src\main\java\io\github\emadbytes\codetrack\CodetrackApplication.java
+package io.github.emadbytes.codetrack.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

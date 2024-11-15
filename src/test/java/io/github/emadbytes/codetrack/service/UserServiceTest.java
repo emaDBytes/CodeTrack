@@ -1,10 +1,11 @@
-package com.example.codetrack.service;
+// src\test\java\io\github\emadbytes\codetrack\service\UserServiceTest.java
+package io.github.emadbytes.codetrack.service;
 
-import com.example.codetrack.exception.DuplicateUserException;
-import com.example.codetrack.exception.UserNotFoundException;
-import com.example.codetrack.model.User;
-import com.example.codetrack.repository.UserRepository;
-import com.example.codetrack.service.impl.UserServiceImpl;
+import io.github.emadbytes.codetrack.exception.DuplicateUserException;
+import io.github.emadbytes.codetrack.exception.UserNotFoundException;
+import io.github.emadbytes.codetrack.model.User;
+import io.github.emadbytes.codetrack.repository.UserRepository;
+import io.github.emadbytes.codetrack.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

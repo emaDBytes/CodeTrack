@@ -1,5 +1,5 @@
-// src\main\java\com\example\codetrack\model\Role.java
-package com.example.codetrack.model;
+// src\main\java\io\github\emadbytes\codetrack\model\Role.java
+package io.github.emadbytes.codetrack.model;
 
 /**
  * Enumeration of user roles in the system.

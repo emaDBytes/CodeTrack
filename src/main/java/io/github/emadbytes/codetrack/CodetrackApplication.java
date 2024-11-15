@@ -1,4 +1,5 @@
-package com.example.codetrack;
+// src\main\java\io\github\emadbytes\codetrack\CodetrackApplication.java
+package io.github.emadbytes.codetrack;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,7 +1,7 @@
-// src/main/java/com/example/codetrack/repository/UserRepository.java
-package com.example.codetrack.repository;
+// src\main\java\io\github\emadbytes\codetrack\repository\UserRepository.java
+package io.github.emadbytes.codetrack.repository;
 
-import com.example.codetrack.model.User;
+import io.github.emadbytes.codetrack.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

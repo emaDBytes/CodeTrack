@@ -1,6 +1,7 @@
-package com.example.codetrack.service;
+// src\main\java\io\github\emadbytes\codetrack\service\UserService.java
+package io.github.emadbytes.codetrack.service;
 
-import com.example.codetrack.model.User;
+import io.github.emadbytes.codetrack.model.User;
 
 import java.util.List;
 import java.util.Optional;
