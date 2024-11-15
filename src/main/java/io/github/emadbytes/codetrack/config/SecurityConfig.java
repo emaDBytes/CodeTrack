@@ -1,5 +1,7 @@
-// src\main\java\io\github\emadbytes\codetrack\CodetrackApplication.java
+// src\main\java\io\github\emadbytes\codetrack\config\SecurityConfig.java
 package io.github.emadbytes.codetrack.config;
+
+import io.github.emadbytes.codetrack.security.CodetrackUserDetailsService;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    private final CodetrackUserDetailsService userDetailsService;
+
+    public SecurityConfig(CodetrackUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     /**
      * Configures password encoding for the application.
@@ -40,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "register", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/home", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
@@ -49,9 +57,9 @@ public class SecurityConfig {
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
-                        .permitAll());
+                        .permitAll())
+                .userDetailsService(userDetailsService);
 
         return http.build();
     }
-
 }
