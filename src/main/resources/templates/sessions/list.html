@@ -1,0 +1,160 @@
+<!-- src\main\resources\templates\sessions\list.html -->
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="fragments/layout :: head('My Sessions')"> </head>
+  <body>
+    <nav th:replace="fragments/layout :: nav"></nav>
+
+    <div class="container mt-4">
+      <div class="row mb-4">
+        <div class="col">
+          <h2>My Coding Sessions</h2>
+        </div>
+        <div class="col text-end">
+          <a th:href="@{/sessions/start}" class="btn btn-primary"
+            >Start New Session</a
+          >
+        </div>
+      </div>
+
+      <!-- Alert Messages -->
+      <div th:if="${success}" class="alert alert-success" role="alert">
+        <span th:text="${success}">Success!</span>
+      </div>
+      <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}">Error!</span>
+      </div>
+
+      <!-- Current Session -->
+      <div th:if="${currentSession}" class="card mb-4 border-primary">
+        <div class="card-header bg-primary text-white">
+          Current Active Session
+        </div>
+        <div class="card-body">
+          <h5
+            class="card-title"
+            th:text="${currentSession.projectName ?: 'Unnamed Project'}"
+          >
+            Project Name
+          </h5>
+          <p
+            class="card-text"
+            th:text="${currentSession.description ?: 'No description provided'}"
+          >
+            Description
+          </p>
+          <p class="card-text">
+            <small class="text-muted">
+              Started:
+              <span
+                th:text="${#temporals.format(currentSession.startTime, 'yyyy-MM-dd HH:mm')}"
+                >Start Time</span
+              >
+            </small>
+          </p>
+          <form
+            th:action="@{/sessions/{id}/end(id=${currentSession.id})}"
+            method="post"
+            style="display: inline"
+          >
+            <button type="submit" class="btn btn-warning">End Session</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Session List -->
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${sessions.empty}" class="alert alert-info">
+            No coding sessions found.
+          </div>
+          <div th:unless="${sessions.empty}" class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Start Time</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="session : ${sessions}">
+                  <td th:text="${session.projectName ?: 'Unnamed Project'}">
+                    Project
+                  </td>
+                  <td
+                    th:text="${#temporals.format(session.startTime, 'yyyy-MM-dd HH:mm')}"
+                  >
+                    Start Time
+                  </td>
+                  <td th:text="${session.formattedDuration ?: 'In Progress'}">
+                    Duration
+                  </td>
+                  <td>
+                    <span
+                      th:class="${session.status == T(io.github.emadbytes.codetrack.model.SessionStatus).COMPLETED ? 'badge bg-success' : 'badge bg-warning'}"
+                      th:text="${session.status}"
+                      >Status</span
+                    >
+                  </td>
+                  <td>
+                    <a
+                      th:href="@{/sessions/{id}(id=${session.id})}"
+                      class="btn btn-sm btn-info"
+                      >View</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <nav th:if="${totalPages > 1}">
+            <ul class="pagination justify-content-center">
+              <li
+                class="page-item"
+                th:classappend="${currentPage == 0 ? 'disabled' : ''}"
+              >
+                <a
+                  class="page-link"
+                  th:href="@{/sessions(page=${currentPage - 1})}"
+                  >Previous</a
+                >
+              </li>
+              <li
+                class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == i ? 'active' : ''}"
+              >
+                <a
+                  class="page-link"
+                  th:href="@{/sessions(page=${i})}"
+                  th:text="${i + 1}"
+                  >1</a
+                >
+              </li>
+              <li
+                class="page-item"
+                th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}"
+              >
+                <a
+                  class="page-link"
+                  th:href="@{/sessions(page=${currentPage + 1})}"
+                  >Next</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments/layout :: scripts"></div>
+  </body>
+</html>
