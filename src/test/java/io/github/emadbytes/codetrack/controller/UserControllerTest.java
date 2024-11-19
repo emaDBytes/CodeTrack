@@ -12,10 +12,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,12 +33,15 @@ class UserControllerTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private MockMvc mockMvc;
     private User testUser;
 
     @BeforeEach
     void setUp() {
-        UserController userController = new UserController(userService);
+        UserController userController = new UserController(userService, passwordEncoder);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(userController)
                 .build();
@@ -57,8 +62,13 @@ class UserControllerTest {
 
     @Test
     void whenPostValidUser_thenRedirectToLogin() throws Exception {
+        // Given
+        given(userService.isUsernameAvailable(anyString())).willReturn(true);
+        given(userService.isEmailAvailable(anyString())).willReturn(true);
+        given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
         given(userService.createUser(any(User.class))).willReturn(testUser);
 
+        // When/Then
         mockMvc.perform(post("/users/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("username", testUser.getUsername())
@@ -66,6 +76,39 @@ class UserControllerTest {
                 .param("password", testUser.getPassword()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?registered"));
+    }
+
+    @Test
+    void whenUsernameAlreadyExists_thenReturnRegistrationForm() throws Exception {
+        // Given
+        given(userService.isUsernameAvailable(anyString())).willReturn(false);
+
+        // When/Then
+        mockMvc.perform(post("/users/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", testUser.getUsername())
+                .param("email", testUser.getEmail())
+                .param("password", testUser.getPassword()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users/register"))
+                .andExpect(model().attributeHasFieldErrors("user", "username"));
+    }
+
+    @Test
+    void whenEmailAlreadyExists_thenReturnRegistrationForm() throws Exception {
+        // Given
+        given(userService.isUsernameAvailable(anyString())).willReturn(true);
+        given(userService.isEmailAvailable(anyString())).willReturn(false);
+
+        // When/Then
+        mockMvc.perform(post("/users/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", testUser.getUsername())
+                .param("email", testUser.getEmail())
+                .param("password", testUser.getPassword()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users/register"))
+                .andExpect(model().attributeHasFieldErrors("user", "email"));
     }
 
     @Test
