@@ -1,0 +1,91 @@
+<!-- src\main\resources\templates\dashboard\detailed-stats.html -->
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="fragments/layout :: head('Detailed Statistics')"> </head>
+  <body>
+    <nav th:replace="fragments/layout :: nav"></nav>
+
+    <div class="container mt-4">
+      <div class="row mb-4">
+        <div class="col">
+          <h2>Detailed Statistics</h2>
+        </div>
+      </div>
+
+      <!-- Date Range Selector -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <form
+            th:action="@{/dashboard/stats}"
+            method="get"
+            class="row g-3 align-items-center"
+          >
+            <div class="col-auto">
+              <label for="startDate" class="col-form-label">Start Date</label>
+            </div>
+            <div class="col-auto">
+              <input
+                type="date"
+                class="form-control"
+                id="startDate"
+                name="startDate"
+                th:value="${param.startDate}"
+              />
+            </div>
+            <div class="col-auto">
+              <label for="endDate" class="col-form-label">End Date</label>
+            </div>
+            <div class="col-auto">
+              <input
+                type="date"
+                class="form-control"
+                id="endDate"
+                name="endDate"
+                th:value="${param.endDate}"
+              />
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Detailed Stats Table -->
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${detailedStats.empty}" class="text-center text-muted">
+            No data available for the selected date range
+          </div>
+          <div th:unless="${detailedStats.empty}" class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Sessions</th>
+                  <th>Total Time</th>
+                  <th>Main Project</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="entry : ${detailedStats}">
+                  <td th:text="${#temporals.format(entry.key, 'yyyy-MM-dd')}">
+                    2024-01-01
+                  </td>
+                  <td th:text="${entry.value.sessionCount}">0</td>
+                  <td th:text="${entry.value.totalMinutes + ' min'}">0 min</td>
+                  <td th:text="${entry.value.mainProject}">Project</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments/layout :: scripts"></div>
+  </body>
+</html>

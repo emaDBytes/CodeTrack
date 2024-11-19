@@ -1,0 +1,203 @@
+<!-- src\main\resources\templates\dashboard\index.html -->
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="fragments/layout :: head('Dashboard')"> </head>
+  <body>
+    <nav th:replace="fragments/layout :: nav"></nav>
+
+    <div class="container mt-4">
+      <!-- Header -->
+      <div class="row mb-4">
+        <div class="col">
+          <h2>Coding Dashboard</h2>
+        </div>
+        <div class="col text-end">
+          <a th:href="@{/sessions/start}" class="btn btn-primary"
+            >Start New Session</a
+          >
+        </div>
+      </div>
+
+      <!-- Active Session Alert -->
+      <div th:if="${currentSession}" class="alert alert-info" role="alert">
+        <strong>Active Session:</strong>
+        Started
+        <span th:text="${#temporals.format(currentSession.startTime, 'HH:mm')}"
+          >00:00</span
+        >
+        <form
+          th:action="@{/sessions/{id}/end(id=${currentSession.id})}"
+          method="post"
+          class="d-inline float-end"
+        >
+          <button type="submit" class="btn btn-warning btn-sm">
+            End Session
+          </button>
+        </form>
+      </div>
+
+      <!-- Quick Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Current Streak</h6>
+              <h2 class="card-title" th:text="${stats.currentStreak + ' days'}">
+                0 days
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Total Sessions</h6>
+              <h2 class="card-title" th:text="${stats.totalSessions}">0</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Total Coding Time</h6>
+              <h2
+                class="card-title"
+                th:text="${stats.totalCodingTime + ' min'}"
+              >
+                0 min
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Avg. Session</h6>
+              <h2
+                class="card-title"
+                th:text="${stats.averageSessionDuration + ' min'}"
+              >
+                0 min
+              </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Recent Activity</h5>
+            </div>
+            <div class="card-body">
+              <div
+                th:if="${recentActivity.empty}"
+                class="text-center text-muted"
+              >
+                No recent activity to display
+              </div>
+              <div th:unless="${recentActivity.empty}" class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Project</th>
+                      <th>Duration</th>
+                      <th>Sessions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="activity : ${recentActivity}">
+                      <td
+                        th:text="${#temporals.format(activity.date, 'MMM dd')}"
+                      >
+                        Jan 01
+                      </td>
+                      <td th:text="${activity.mainProject}">Project</td>
+                      <td th:text="${activity.totalMinutes + ' min'}">0 min</td>
+                      <td th:text="${activity.sessionCount}">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Monthly Overview</h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <h6 class="text-muted">Monthly Total</h6>
+                <h3 th:text="${stats.currentMonthTotal + ' min'}">0 min</h3>
+              </div>
+              <div class="mb-3">
+                <h6 class="text-muted">Daily Average</h6>
+                <h3 th:text="${stats.currentMonthDailyAverage + ' min'}">
+                  0 min
+                </h3>
+              </div>
+              <div>
+                <h6 class="text-muted">Most Productive Hour</h6>
+                <h3
+                  th:if="${stats.mostProductiveHour != null}"
+                  th:text="${stats.mostProductiveHour + ':00'}"
+                >
+                  00:00
+                </h3>
+                <h3 th:if="${stats.mostProductiveHour == null}">N/A</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Distribution -->
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Project Distribution</h5>
+            </div>
+            <div class="card-body">
+              <div
+                th:if="${stats.projectTimeDistribution.empty}"
+                class="text-center text-muted"
+              >
+                No project data available
+              </div>
+              <div
+                th:unless="${stats.projectTimeDistribution.empty}"
+                class="table-responsive"
+              >
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Total Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="project : ${stats.projectTimeDistribution}">
+                      <td th:text="${project.key}">Project Name</td>
+                      <td th:text="${project.value + ' min'}">0 min</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments/layout :: scripts"></div>
+  </body>
+</html>

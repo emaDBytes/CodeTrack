@@ -1,0 +1,58 @@
+<!-- src\main\resources\templates\dashboard\project-stats.html -->
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="fragments/layout :: head('Project Statistics')"> </head>
+  <body>
+    <nav th:replace="fragments/layout :: nav"></nav>
+
+    <div class="container mt-4">
+      <div class="row mb-4">
+        <div class="col">
+          <h2>Project Statistics</h2>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div th:if="${projectStats.empty}" class="text-center text-muted">
+            No project data available
+          </div>
+          <div th:unless="${projectStats.empty}" class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Total Time</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="project : ${projectStats}">
+                  <td th:text="${project.key}">Project Name</td>
+                  <td th:text="${project.value + ' min'}">0 min</td>
+                  <td>
+                    <div class="progress">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        th:style="'width: ' + ${(project.value * 100.0) / projectStats.values().stream().mapToLong(Long::longValue).sum()} + '%'"
+                        th:text="${#numbers.formatDecimal((project.value * 100.0) / projectStats.values().stream().mapToLong(Long::longValue).sum(), 1, 1) + '%'}"
+                      >
+                        0%
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments/layout :: scripts"></div>
+  </body>
+</html>
