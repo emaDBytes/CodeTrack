@@ -47,8 +47,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable()) // For development only
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/register", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/home", "/register", "/css/**", "/js/**", "/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
@@ -58,7 +59,9 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll())
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService)
+                // For h2-console access during development
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }
