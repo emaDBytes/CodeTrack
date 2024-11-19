@@ -2,10 +2,12 @@
 package io.github.emadbytes.codetrack.controller;
 
 import io.github.emadbytes.codetrack.model.User;
+import io.github.emadbytes.codetrack.model.Role;
 import io.github.emadbytes.codetrack.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,9 +24,11 @@ import jakarta.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/register")
@@ -35,18 +39,41 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
+        log.debug("Received registration request for username: {}", user.getUsername());
+
+        // Validate username and email uniqueness
+        if (!userService.isUsernameAvailable(user.getUsername())) {
+            result.rejectValue("username", "error.user", "Username is already taken");
+            return "users/register";
+        }
+
+        if (!userService.isEmailAvailable(user.getEmail())) {
+            result.rejectValue("email", "error.user", "Email is already in use");
+            return "users/register";
+        }
+
         if (result.hasErrors()) {
             return "users/register";
         }
 
         try {
-            userService.createUser(user);
+            // Log original password length (don't log the actual password!)
+            log.debug("Password length before encoding: {}", user.getPassword().length());
+
+            // Encode password and set default role
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.addRole(Role.USER);
+
+            log.debug("Attempting to register new user with username: {}", user.getUsername());
+            User createdUser = userService.createUser(user);
+
+            log.info("Successfully registered new user: {}", createdUser.getUsername());
             return "redirect:/login?registered";
         } catch (Exception e) {
-            result.rejectValue("username", "error.user", e.getMessage());
+            log.error("Error registering user: {}", e.getMessage());
+            result.rejectValue("username", "error.user", "Registration failed: " + e.getMessage());
             return "users/register";
         }
-
     }
 
     @GetMapping("/profile")
@@ -54,5 +81,4 @@ public class UserController {
         // To be implemented after adding authentication
         return "users/profile";
     }
-
 }

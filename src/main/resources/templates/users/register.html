@@ -1,34 +1,86 @@
-// src\main\resources\templates\users\register.html
+<!-- src\main\resources\templates\users\register.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Register - CodeTrack</title>
-  </head>
+  <head th:replace="fragments/layout :: head('Register')"> </head>
   <body>
-    <h2>User Registration</h2>
-    <form th:action="@{/users/register}" th:object="${user}" method="post">
-      <div>
-        <label>Username:</label>
-        <input type="text" th:field="*{username}" />
-        <span
-          th:if="${#fields.hasErrors('username')}"
-          th:errors="*{username}"
-        ></span>
+    <nav th:replace="fragments/layout :: nav"></nav>
+
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="mb-0">User Registration</h4>
+            </div>
+            <div class="card-body">
+              <form
+                th:action="@{/users/register}"
+                th:object="${user}"
+                method="post"
+              >
+                <!-- Add CSRF token -->
+                <div th:replace="~{fragments/form :: csrf}"></div>
+
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    th:field="*{username}"
+                    th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    th:if="${#fields.hasErrors('username')}"
+                    th:errors="*{username}"
+                  ></div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    th:field="*{email}"
+                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    th:if="${#fields.hasErrors('email')}"
+                    th:errors="*{email}"
+                  ></div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    th:field="*{password}"
+                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    th:if="${#fields.hasErrors('password')}"
+                    th:errors="*{password}"
+                  ></div>
+                </div>
+
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary">
+                    Register
+                  </button>
+                  <a href="/login" class="btn btn-outline-secondary"
+                    >Back to Login</a
+                  >
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <label>Email:</label>
-        <input type="email" th:field="*{email}" />
-        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-      </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" th:field="*{password}" />
-        <span
-          th:if="${#fields.hasErrors('password')}"
-          th:errors="*{password}"
-        ></span>
-      </div>
-      <button type="submit">Register</button>
-    </form>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
   </body>
 </html>

@@ -6,7 +6,9 @@ import io.github.emadbytes.codetrack.exception.UserNotFoundException;
 import io.github.emadbytes.codetrack.model.User;
 import io.github.emadbytes.codetrack.repository.UserRepository;
 import io.github.emadbytes.codetrack.service.UserService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
