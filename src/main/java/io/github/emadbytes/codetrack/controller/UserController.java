@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
  * Controller handling user registration and profile management.
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
 
@@ -28,15 +28,15 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String showRegisterationForm(Model model) {
+    public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        return "user/register";
+        return "users/register";
     }
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
         if (result.hasErrors()) {
-            return "user/register";
+            return "users/register";
         }
 
         try {
@@ -44,7 +44,7 @@ public class UserController {
             return "redirect:/login?registered";
         } catch (Exception e) {
             result.rejectValue("username", "error.user", e.getMessage());
-            return "user/register";
+            return "users/register";
         }
 
     }
@@ -52,7 +52,7 @@ public class UserController {
     @GetMapping("/profile")
     public String showProfile(Model model) {
         // To be implemented after adding authentication
-        return "user/profile";
+        return "users/profile";
     }
 
 }

@@ -3,12 +3,16 @@ package io.github.emadbytes.codetrack.controller;
 
 import io.github.emadbytes.codetrack.dto.CodingSessionDTO;
 import io.github.emadbytes.codetrack.dto.NewSessionRequest;
+import io.github.emadbytes.codetrack.exception.UserNotFoundException;
 import io.github.emadbytes.codetrack.model.CodingSession;
 import io.github.emadbytes.codetrack.model.User;
 import io.github.emadbytes.codetrack.service.CodingSessionService;
 import io.github.emadbytes.codetrack.service.UserService;
+
 import jakarta.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,7 +50,8 @@ public class CodingSessionController {
             @RequestParam(defaultValue = "10") int size,
             Model model) {
 
-        User user = userService.findByUsername(userDetails.getUsername());
+        User user = userService.getUserByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + userDetails.getUsername()));
         Page<CodingSession> sessions = codingSessionService.getUserSessions(
                 user, PageRequest.of(page, size));
 
@@ -87,11 +92,13 @@ public class CodingSessionController {
         }
 
         try {
-            User user = userService.findByUsername(userDetails.getUsername());
+            User user = userService.getUserByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new UserNotFoundException("User not found: " + userDetails.getUsername()));
             CodingSession session = codingSessionService.startSession(
                     user, request.getDescription(), request.getProjectName());
 
-            redirectAttributes.addFlashAttribute("success", "Coding session started successfully!");
+            redirectAttributes.addFlashAttribute("success",
+                    "Coding session started successfully! Session ID: " + session.getId());
             return "redirect:/sessions";
 
         } catch (Exception e) {
