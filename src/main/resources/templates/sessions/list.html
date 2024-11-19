@@ -60,6 +60,7 @@
             method="post"
             style="display: inline"
           >
+            <div th:replace="fragments/form :: csrf"></div>
             <button type="submit" class="btn btn-warning">End Session</button>
           </form>
         </div>

@@ -27,6 +27,8 @@
               </div>
 
               <form th:action="@{/login}" method="post">
+                <div th:replace="fragments/form :: csrf"></div>
+
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input
