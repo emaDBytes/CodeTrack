@@ -1,17 +1,12 @@
-// src\test\java\io\github\emadbytes\codetrack\model\UserTest.java
 package io.github.emadbytes.codetrack.model;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-
 import org.assertj.core.api.Assertions;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,17 +19,11 @@ public class UserTest {
     private Validator validator;
     private User user;
 
-    /**
-     * Set up method that runs before each test.
-     * Initializes the validator and creates a test user.
-     */
     @BeforeEach
     void setUp() {
-        // Create validator instance
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
 
-        // Create a valid user for testing
         user = new User();
         user.setUsername("testuser");
         user.setEmail("test@example.com");
@@ -42,18 +31,12 @@ public class UserTest {
         user.setActive(true);
     }
 
-    /**
-     * Test valid user creation with all required fields.
-     */
     @Test
     void testValidUser() {
         var violations = validator.validate(user);
         assertTrue(violations.isEmpty(), "Validation should pass for a valid user");
     }
 
-    /**
-     * Test validation when username is blank.
-     */
     @Test
     void testBlankUsername() {
         user.setUsername("");
@@ -65,9 +48,6 @@ public class UserTest {
                 "Should have correct error message");
     }
 
-    /**
-     * Test validation when email is invalid.
-     */
     @Test
     void testInvalidEmail() {
         user.setEmail("invalid-email");
@@ -76,23 +56,17 @@ public class UserTest {
         assertEquals(1, violations.size(), "Should have exactly one validation violation");
     }
 
-    /**
-     * Test automatic timestamp setting on creation.
-     */
     @Test
     void testTimestampGeneration() {
         assertNull(user.getCreatedAt(), "CreatedAt should be null before persist");
-        user.onCreate();
-        assertNotNull(user.getCreatedAt(), "CreatedAt should be set after onCreate");
-        assertNotNull(user.getUpdatedAt(), "UpdatedAt should be set after onCreate");
+        user.onPersistOrUpdate();
+        assertNotNull(user.getCreatedAt(), "CreatedAt should be set after persist");
+        assertNotNull(user.getUpdatedAt(), "UpdatedAt should be set after persist");
     }
 
-    /**
-     * Test update timestamp modification.
-     */
     @Test
     void testUpdateTimestamp() {
-        user.onCreate();
+        user.onPersistOrUpdate(); // Initial persist
         LocalDateTime originalUpdate = user.getUpdatedAt();
 
         // Wait a small amount of time to ensure different timestamp
@@ -102,14 +76,32 @@ public class UserTest {
             e.printStackTrace();
         }
 
-        user.onUpdate();
+        user.onPersistOrUpdate(); // Update
         assertNotEquals(originalUpdate, user.getUpdatedAt(),
-                "UpdatedAt should change after onUpdate");
+                "UpdatedAt should change after update");
     }
 
-    /**
-     * Test Lombok-generated equals method.
-     */
+    @Test
+    void testPasswordValidation() {
+        // Test regular user requires password
+        User regularUser = new User();
+        regularUser.setUsername("regular");
+        regularUser.setEmail("regular@example.com");
+        regularUser.setIsOAuth2User(false);
+
+        assertThrows(IllegalStateException.class, regularUser::onPersistOrUpdate,
+                "Regular user should require password");
+
+        // Test OAuth2 user doesn't require password
+        User oauth2User = new User();
+        oauth2User.setUsername("oauth2");
+        oauth2User.setEmail("oauth2@example.com");
+        oauth2User.setIsOAuth2User(true);
+
+        assertDoesNotThrow(oauth2User::onPersistOrUpdate,
+                "OAuth2 user should not require password");
+    }
+
     @Test
     void testEquals() {
         User user1 = new User();
@@ -123,9 +115,6 @@ public class UserTest {
         assertEquals(user1, user2, "Users with same ID should be equal");
     }
 
-    /**
-     * Test adding and checking roles.
-     */
     @Test
     void testRoleManagement() {
         User user = new User();
@@ -147,9 +136,6 @@ public class UserTest {
         Assertions.assertThat(user.getRoles()).containsExactly(Role.ADMIN);
     }
 
-    /**
-     * Test role enumeration functionality.
-     */
     @Test
     void testRoleEnumeration() {
         assertThat(Role.USER.getFullRoleName()).isEqualTo("ROLE_USER");
