@@ -1,11 +1,13 @@
-<!-- src\main\resources\templates\auth\login.html -->
+<!-- src/main/resources/templates/auth/login.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/layout :: head('Login')"> </head>
+  <head th:replace="~{fragments/layout :: head('Login')}">
+    <title>Login</title>
+  </head>
   <body>
-    <nav th:replace="fragments/layout :: nav"></nav>
+    <nav th:replace="~{fragments/layout :: nav}"></nav>
 
-    <div class="container mt-5">
+    <div class="container mt-4">
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card">
@@ -13,22 +15,16 @@
               <h4 class="mb-0">Login</h4>
             </div>
             <div class="card-body">
-              <!-- Login Error Message -->
+              <!-- Show error message if exists -->
               <div th:if="${param.error}" class="alert alert-danger">
-                Invalid username or password
+                Invalid username or password.
               </div>
-              <!-- Logout Success Message -->
               <div th:if="${param.logout}" class="alert alert-success">
-                You have been logged out
-              </div>
-              <!-- Registration Success Message -->
-              <div th:if="${param.registered}" class="alert alert-success">
-                Registration successful! Please login
+                You have been logged out.
               </div>
 
+              <!-- Regular login form -->
               <form th:action="@{/login}" method="post">
-                <div th:replace="fragments/form :: csrf"></div>
-
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input
@@ -51,11 +47,34 @@
                 </div>
                 <div class="d-grid gap-2">
                   <button type="submit" class="btn btn-primary">Login</button>
-                  <a href="/users/register" class="btn btn-outline-secondary"
-                    >Register</a
-                  >
                 </div>
               </form>
+
+              <!-- Divider -->
+              <div class="text-center my-3">
+                <span class="px-2 bg-white">OR</span>
+              </div>
+
+              <!-- OAuth2 Login -->
+              <div class="d-grid gap-2">
+                <a
+                  href="/oauth2/authorization/google"
+                  class="btn btn-outline-dark"
+                >
+                  <img
+                    src="/images/google-logo.svg"
+                    alt="Google"
+                    style="width: 20px; height: 20px; margin-right: 8px"
+                  />
+                  Sign in with Google
+                </a>
+              </div>
+
+              <!-- Registration link -->
+              <div class="text-center mt-3">
+                <span>Don't have an account? </span>
+                <a th:href="@{/users/register}">Register</a>
+              </div>
             </div>
           </div>
         </div>

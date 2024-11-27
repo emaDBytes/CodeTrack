@@ -58,3 +58,6 @@ build/
 out/
 # Java compiled class files
 *.class
+
+### Package files ###
+.env

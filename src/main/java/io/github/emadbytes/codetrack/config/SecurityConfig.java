@@ -1,7 +1,9 @@
 // src\main\java\io\github\emadbytes\codetrack\config\SecurityConfig.java
 package io.github.emadbytes.codetrack.config;
 
-import io.github.emadbytes.codetrack.security.CodetrackUserDetailsService;
+import io.github.emadbytes.codetrack.security.OAuth2UserService;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,59 +14,56 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Security configuration for the application.
- * Defines security rules, password encoding, and protected endpoints.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@Slf4j
 public class SecurityConfig {
 
-    private final CodetrackUserDetailsService userDetailsService;
+        private final OAuth2UserService oAuth2UserService;
 
-    public SecurityConfig(CodetrackUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+        public SecurityConfig(OAuth2UserService oAuth2UserService) {
+                this.oAuth2UserService = oAuth2UserService;
+        }
 
-    /**
-     * Configures password encoding for the application.
-     *
-     * @return the password encoder to use
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf
+                                                .ignoringRequestMatchers("/h2-console/**"))
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/oauth2/**").permitAll()
+                                                .requestMatchers("/", "/home", "/users/register", "/h2-console/**")
+                                                .permitAll()
+                                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .defaultSuccessUrl("/dashboard")
+                                                .permitAll())
+                                .oauth2Login(oauth2 -> oauth2
+                                                .loginPage("/login")
+                                                .userInfoEndpoint(userInfo -> userInfo
+                                                                .userService(oAuth2UserService))
+                                                .successHandler((request, response, authentication) -> {
+                                                        log.info("OAuth2 login successful for user: {}",
+                                                                        authentication.getName());
+                                                        response.sendRedirect("/dashboard");
+                                                })
+                                                .failureHandler((request, response, exception) -> {
+                                                        log.error("OAuth2 login failed", exception);
+                                                        response.sendRedirect("/login?error=oauth2");
+                                                }))
+                                .logout(logout -> logout
+                                                .logoutSuccessUrl("/login?logout")
+                                                .permitAll());
 
-    /**
-     * Configures security rules for the application.
-     *
-     * @param http the HttpSecurity to configure
-     * @return the configured SecurityFilterChain
-     * @throws Exception if an error occurs during configuration
-     */
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf
-                        // Disable CSRF only for H2 console
-                        .ignoringRequestMatchers("/h2-console/**"))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/users/register", "/h2-console/**").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll())
-                .userDetailsService(userDetailsService)
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+                return http.build();
+        }
 
-        return http.build();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
