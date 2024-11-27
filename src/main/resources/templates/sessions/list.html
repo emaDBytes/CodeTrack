@@ -1,14 +1,15 @@
-<!-- src\main\resources\templates\sessions\list.html -->
+<!-- src/main/resources/templates/sessions/list.html -->
 <!DOCTYPE html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-  <head th:replace="fragments/layout :: head('My Sessions')"> </head>
+  <head th:replace="fragments/layout :: head('My Sessions')"></head>
   <body>
     <nav th:replace="fragments/layout :: nav"></nav>
 
     <div class="container mt-4">
+      <!-- Header -->
       <div class="row mb-4">
         <div class="col">
           <h2>My Coding Sessions</h2>
@@ -20,95 +21,88 @@
         </div>
       </div>
 
-      <!-- Alert Messages -->
-      <div th:if="${success}" class="alert alert-success" role="alert">
-        <span th:text="${success}">Success!</span>
-      </div>
-      <div th:if="${error}" class="alert alert-danger" role="alert">
-        <span th:text="${error}">Error!</span>
-      </div>
-
-      <!-- Current Session -->
-      <div th:if="${currentSession}" class="card mb-4 border-primary">
-        <div class="card-header bg-primary text-white">
-          Current Active Session
-        </div>
-        <div class="card-body">
-          <h5
-            class="card-title"
-            th:text="${currentSession.projectName ?: 'Unnamed Project'}"
-          >
-            Project Name
-          </h5>
-          <p
-            class="card-text"
-            th:text="${currentSession.description ?: 'No description provided'}"
-          >
-            Description
-          </p>
-          <p class="card-text">
-            <small class="text-muted">
-              Started:
-              <span
-                th:text="${#temporals.format(currentSession.startTime, 'yyyy-MM-dd HH:mm')}"
-                >Start Time</span
-              >
-            </small>
-          </p>
-          <form
-            th:action="@{/sessions/{id}/end(id=${currentSession.id})}"
-            method="post"
-            style="display: inline"
-          >
-            <div th:replace="fragments/form :: csrf"></div>
-            <button type="submit" class="btn btn-warning">End Session</button>
-          </form>
-        </div>
+      <!-- Active Session Alert -->
+      <div th:if="${currentSession}" class="alert alert-info" role="alert">
+        <strong>Active Session:</strong>
+        Started
+        <span th:text="${#temporals.format(currentSession.startTime, 'HH:mm')}"
+          >00:00</span
+        >
+        <form
+          th:action="@{/sessions/{id}/end(id=${currentSession.id})}"
+          method="post"
+          class="d-inline float-end"
+        >
+          <button type="submit" class="btn btn-warning btn-sm">
+            End Session
+          </button>
+        </form>
       </div>
 
-      <!-- Session List -->
+      <!-- Sessions List -->
       <div class="card">
         <div class="card-body">
-          <div th:if="${sessions.empty}" class="alert alert-info">
-            No coding sessions found.
+          <div th:if="${sessions.empty}" class="text-center text-muted">
+            No coding sessions found. Start tracking your coding time!
           </div>
           <div th:unless="${sessions.empty}" class="table-responsive">
-            <table class="table table-hover">
+            <table class="table">
               <thead>
                 <tr>
+                  <th>Date</th>
                   <th>Project</th>
-                  <th>Start Time</th>
                   <th>Duration</th>
+                  <th>Description</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr th:each="session : ${sessions}">
-                  <td th:text="${session.projectName ?: 'Unnamed Project'}">
-                    Project
-                  </td>
-                  <td
-                    th:text="${#temporals.format(session.startTime, 'yyyy-MM-dd HH:mm')}"
-                  >
-                    Start Time
-                  </td>
-                  <td th:text="${session.formattedDuration ?: 'In Progress'}">
-                    Duration
-                  </td>
+                <tr th:each="codingSession : ${sessions}">
                   <td>
                     <span
-                      th:class="${session.status == T(io.github.emadbytes.codetrack.model.SessionStatus).COMPLETED ? 'badge bg-success' : 'badge bg-warning'}"
-                      th:text="${session.status}"
-                      >Status</span
+                      th:text="${#temporals.format(codingSession.startTime, 'MMM dd, yyyy')}"
+                      >Jan 01, 2024</span
+                    ><br />
+                    <small
+                      class="text-muted"
+                      th:text="${#temporals.format(codingSession.startTime, 'HH:mm')}"
+                      >00:00</small
+                    >
+                  </td>
+                  <td th:text="${codingSession.projectName}">Project Name</td>
+                  <td>
+                    <span
+                      th:if="${codingSession.status.name() == 'COMPLETED'}"
+                      th:text="${codingSession.durationMinutes + ' min'}"
+                      >0 min</span
+                    >
+                    <span
+                      th:if="${codingSession.status.name() == 'IN_PROGRESS'}"
+                      class="text-primary"
+                      >In Progress</span
+                    >
+                  </td>
+                  <td th:text="${codingSession.description}">Description</td>
+                  <td>
+                    <span
+                      th:if="${codingSession.status.name() == 'COMPLETED'}"
+                      class="badge bg-success"
+                      >Completed</span
+                    >
+                    <span
+                      th:if="${codingSession.status.name() == 'IN_PROGRESS'}"
+                      class="badge bg-primary"
+                      >Active</span
                     >
                   </td>
                   <td>
                     <a
-                      th:href="@{/sessions/{id}(id=${session.id})}"
-                      class="btn btn-sm btn-info"
-                      >View</a
+                      th:href="@{/sessions/{id}(id=${codingSession.id})}"
+                      class="btn btn-sm btn-outline-primary"
                     >
+                      Details
+                    </a>
                   </td>
                 </tr>
               </tbody>
@@ -116,37 +110,41 @@
           </div>
 
           <!-- Pagination -->
-          <nav th:if="${totalPages > 1}">
+          <nav
+            th:if="${sessions.totalPages > 1}"
+            aria-label="Page navigation"
+            class="mt-4"
+          >
             <ul class="pagination justify-content-center">
               <li
                 class="page-item"
-                th:classappend="${currentPage == 0 ? 'disabled' : ''}"
+                th:classappend="${sessions.first} ? 'disabled'"
               >
                 <a
                   class="page-link"
-                  th:href="@{/sessions(page=${currentPage - 1})}"
+                  th:href="@{/sessions(page=${sessions.number - 1})}"
                   >Previous</a
                 >
               </li>
               <li
                 class="page-item"
-                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${currentPage == i ? 'active' : ''}"
+                th:each="pageNum : ${#numbers.sequence(0, sessions.totalPages - 1)}"
+                th:classappend="${pageNum == sessions.number} ? 'active'"
               >
                 <a
                   class="page-link"
-                  th:href="@{/sessions(page=${i})}"
-                  th:text="${i + 1}"
+                  th:href="@{/sessions(page=${pageNum})}"
+                  th:text="${pageNum + 1}"
                   >1</a
                 >
               </li>
               <li
                 class="page-item"
-                th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}"
+                th:classappend="${sessions.last} ? 'disabled'"
               >
                 <a
                   class="page-link"
-                  th:href="@{/sessions(page=${currentPage + 1})}"
+                  th:href="@{/sessions(page=${sessions.number + 1})}"
                   >Next</a
                 >
               </li>
