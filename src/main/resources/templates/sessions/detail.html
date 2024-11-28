@@ -1,14 +1,29 @@
-<!-- src\main\resources\templates\sessions\detail.html -->
 <!DOCTYPE html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-  <head th:replace="fragments/layout :: head('Session Details')"> </head>
+  <head th:insert="~{fragments/layout :: head('Session Details')}"> </head>
   <body>
-    <nav th:replace="fragments/layout :: nav"></nav>
+    <nav th:insert="~{fragments/layout :: nav}"></nav>
 
     <div class="container mt-4">
+      <!-- Debug information -->
+      <!-- <div class="alert alert-info">
+        <strong>Debug Info:</strong>
+        <pre>
+            Raw Session Object: <span th:text="${codingSession}"></span>
+            
+            Direct Access Attempt:
+            ID: <span th:text="${codingSession?.id}"></span>
+            Project: <span th:text="${codingSession?.projectName}"></span>
+            Description: <span th:text="${codingSession?.description}"></span>
+            Start Time: <span th:text="${codingSession?.startTime}"></span>
+            End Time: <span th:text="${codingSession?.endTime}"></span>
+            Duration: <span th:text="${codingSession?.durationMinutes}"></span>
+            Status: <span th:text="${codingSession?.status}"></span>
+        </pre>
+      </div> -->
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card">
@@ -16,8 +31,8 @@
               <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Session Details</h4>
                 <span
-                  th:class="${session.status == T(io.github.emadbytes.codetrack.model.SessionStatus).COMPLETED ? 'badge bg-success' : 'badge bg-warning'}"
-                  th:text="${session.status}"
+                  th:class="${codingSession.status == T(io.github.emadbytes.codetrack.model.SessionStatus).COMPLETED ? 'badge bg-success' : 'badge bg-warning'}"
+                  th:text="${codingSession.status}"
                   >Status</span
                 >
               </div>
@@ -28,7 +43,7 @@
                 <dt class="col-sm-3">Project</dt>
                 <dd
                   class="col-sm-9"
-                  th:text="${session.projectName ?: 'Unnamed Project'}"
+                  th:text="${codingSession.projectName ?: 'Unnamed Project'}"
                 >
                   Project Name
                 </dd>
@@ -37,7 +52,7 @@
                 <dt class="col-sm-3">Description</dt>
                 <dd
                   class="col-sm-9"
-                  th:text="${session.description ?: 'No description provided'}"
+                  th:text="${codingSession.description ?: 'No description provided'}"
                 >
                   Description
                 </dd>
@@ -46,7 +61,7 @@
                 <dt class="col-sm-3">Started</dt>
                 <dd
                   class="col-sm-9"
-                  th:text="${#temporals.format(session.startTime, 'yyyy-MM-dd HH:mm:ss')}"
+                  th:text="${#temporals.format(codingSession.startTime, 'yyyy-MM-dd HH:mm:ss')}"
                 >
                   Start Time
                 </dd>
@@ -55,7 +70,7 @@
                 <dt class="col-sm-3">Ended</dt>
                 <dd
                   class="col-sm-9"
-                  th:text="${session.endTime != null ? #temporals.format(session.endTime, 'yyyy-MM-dd HH:mm:ss') : 'In Progress'}"
+                  th:text="${codingSession.endTime != null ? #temporals.format(codingSession.endTime, 'yyyy-MM-dd HH:mm:ss') : 'In Progress'}"
                 >
                   End Time
                 </dd>
@@ -64,7 +79,7 @@
                 <dt class="col-sm-3">Duration</dt>
                 <dd
                   class="col-sm-9"
-                  th:text="${session.formattedDuration ?: 'In Progress'}"
+                  th:text="${codingSession.formattedDuration ?: 'In Progress'}"
                 >
                   Duration
                 </dd>
@@ -73,8 +88,8 @@
               <div class="mt-4">
                 <!-- End Session Button (if in progress) -->
                 <form
-                  th:if="${session.status == T(io.github.emadbytes.codetrack.model.SessionStatus).IN_PROGRESS}"
-                  th:action="@{/sessions/{id}/end(id=${session.id})}"
+                  th:if="${codingSession.status == T(io.github.emadbytes.codetrack.model.SessionStatus).IN_PROGRESS}"
+                  th:action="@{/sessions/{id}/end(id=${codingSession.id})}"
                   method="post"
                   class="d-inline"
                 >
@@ -94,6 +109,6 @@
       </div>
     </div>
 
-    <div th:replace="fragments/layout :: scripts"></div>
+    <div th:insert="~{fragments/layout :: scripts}"></div>
   </body>
 </html>

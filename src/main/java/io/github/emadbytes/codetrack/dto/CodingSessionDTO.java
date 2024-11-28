@@ -6,6 +6,7 @@ import io.github.emadbytes.codetrack.model.SessionStatus;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
+@Slf4j
 public class CodingSessionDTO {
     private Long id;
     private Long userId;
@@ -35,6 +37,8 @@ public class CodingSessionDTO {
      * @return DTO representation of the coding session
      */
     public static CodingSessionDTO fromEntity(CodingSession session) {
+        log.debug("Converting session to DTO. Input session: {}", session);
+
         CodingSessionDTO dto = new CodingSessionDTO();
         dto.setId(session.getId());
         dto.setUserId(session.getUser().getId());
@@ -52,6 +56,7 @@ public class CodingSessionDTO {
             dto.setFormattedDuration(String.format("%dh %dm", hours, minutes));
         }
 
+        log.debug("Converted DTO: {}", dto);
         return dto;
     }
 }

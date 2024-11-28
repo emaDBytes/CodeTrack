@@ -35,21 +35,28 @@ public class DevDataConfig {
         return args -> {
             log.info("Starting database initialization...");
 
-            // Create users
-            List<User> users = createUsers(passwordEncoder);
-            userRepository.saveAll(users);
-            log.info("Created {} users", users.size());
+            // Only initialize if no users exist
+            if (userRepository.count() == 0) {
+                log.info("Database is empty. Starting initialization...");
 
-            // Create sessions for each user
-            for (User user : users) {
-                if (!user.getUsername().equals("admin")) { // Skip admin user for sessions
-                    List<CodingSession> sessions = createUserSessions(user);
-                    sessionRepository.saveAll(sessions);
-                    log.info("Created {} sessions for user {}", sessions.size(), user.getUsername());
+                // Create users
+                List<User> users = createUsers(passwordEncoder);
+                userRepository.saveAll(users);
+                log.info("Created {} users", users.size());
+
+                // Create sessions for each user
+                for (User user : users) {
+                    if (!user.getUsername().equals("admin")) { // Skip admin user for sessions
+                        List<CodingSession> sessions = createUserSessions(user);
+                        sessionRepository.saveAll(sessions);
+                        log.info("Created {} sessions for user {}", sessions.size(), user.getUsername());
+                    }
                 }
-            }
 
-            log.info("Database initialization completed!");
+                log.info("Database initialization completed!");
+            } else {
+                log.info("Database already contains data. Skipping initialization.");
+            }
         };
     }
 

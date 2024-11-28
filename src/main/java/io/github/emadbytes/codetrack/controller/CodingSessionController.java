@@ -45,12 +45,15 @@ public class CodingSessionController {
      */
     @GetMapping("/{id}")
     public String viewSession(@PathVariable Long id, Model model) {
-        log.debug("Fetching session details for ID: {}", id);
-        CodingSession session = codingSessionService.getSession(id);
-        log.debug("Retrieved session: {}", session);
-        CodingSessionDTO sessionDto = CodingSessionDTO.fromEntity(session);
-        log.debug("Converted to DTO: {}", sessionDto);
-        model.addAttribute("session", sessionDto);
+        CodingSession rawSession = codingSessionService.getSession(id);
+        CodingSessionDTO sessionDto = CodingSessionDTO.fromEntity(rawSession);
+
+        // Use a different name to avoid conflict with HttpSession
+        model.addAttribute("codingSession", sessionDto);
+        model.addAttribute("rawSession", rawSession);
+
+        log.debug("Added to model - codingSession: {}", sessionDto);
+
         return "sessions/detail";
     }
 
