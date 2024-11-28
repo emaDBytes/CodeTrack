@@ -41,6 +41,20 @@ public class CodingSessionController {
     }
 
     /**
+     * Shows detailed view of a specific session.
+     */
+    @GetMapping("/{id}")
+    public String viewSession(@PathVariable Long id, Model model) {
+        log.debug("Fetching session details for ID: {}", id);
+        CodingSession session = codingSessionService.getSession(id);
+        log.debug("Retrieved session: {}", session);
+        CodingSessionDTO sessionDto = CodingSessionDTO.fromEntity(session);
+        log.debug("Converted to DTO: {}", sessionDto);
+        model.addAttribute("session", sessionDto);
+        return "sessions/detail";
+    }
+
+    /**
      * Shows the list of user's coding sessions.
      */
     @GetMapping
@@ -128,13 +142,4 @@ public class CodingSessionController {
         return "redirect:/sessions";
     }
 
-    /**
-     * Shows detailed view of a specific session.
-     */
-    @GetMapping("/{id}")
-    public String viewSession(@PathVariable Long id, Model model) {
-        CodingSession session = codingSessionService.getSession(id);
-        model.addAttribute("session", CodingSessionDTO.fromEntity(session));
-        return "sessions/detail";
-    }
 }
