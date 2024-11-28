@@ -1,105 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maven Project Object Model (POM) file for the codetrack project.
+  This file defines the project's dependencies, build configuration, and other settings.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- Model version for the POM file -->
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- Parent project configuration -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.6</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> <!-- Lookup parent from repository -->
     </parent>
+
+    <!-- Project coordinates -->
     <groupId>io.github.emadbytes</groupId>
     <artifactId>codetrack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
+    <!-- Project metadata -->
     <name>codetrack</name>
     <description>BIT Student Coding Time Tracker</description>
-    <url/>
+    <url/> <!-- Project URL (to be filled) -->
+
+    <!-- Licensing information -->
     <licenses>
         <license/>
     </licenses>
+
+    <!-- Developer information -->
     <developers>
         <developer/>
     </developers>
+
+    <!-- Source Control Management (SCM) information -->
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection/> <!-- Read-only connection URL (to be filled) -->
+        <developerConnection/> <!-- Developer connection URL (to be filled) -->
+        <tag/> <!-- SCM tag (to be filled) -->
+        <url/> <!-- SCM URL (to be filled) -->
     </scm>
+
+    <!-- Project properties -->
     <properties>
-        <java.version>17</java.version>
+        <java.version>17</java.version> <!-- Java version used for the project -->
     </properties>
+
+    <!-- Project dependencies -->
     <dependencies>
+        <!-- Spring Boot Starter for JPA (Java Persistence API) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!-- Spring Boot Starter for Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!-- Spring Boot Starter for Thymeleaf -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <!-- Spring Boot Starter for Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <!-- Spring Boot Starter for Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Thymeleaf Extras for Spring Security 6 -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
-
+        <!-- Spring Boot DevTools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+        <!-- H2 Database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- Project Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- Spring Boot Starter for Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Spring Security Test -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Spring Boot Starter for OAuth2 Client -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
+        <!-- Spring Dotenv -->
         <dependency>
             <groupId>me.paulschwarz</groupId>
             <artifactId>spring-dotenv</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <!-- Springdoc OpenAPI Starter for WebMVC UI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.3.0</version>
         </dependency>
-
     </dependencies>
 
+    <!-- Build configuration -->
     <build>
         <plugins>
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -112,7 +147,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-
+            <!-- Maven Surefire Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -125,5 +160,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
