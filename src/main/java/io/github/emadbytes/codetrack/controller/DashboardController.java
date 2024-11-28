@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 /**
  * Controller responsible for handling dashboard-related requests.
  * Provides views for coding statistics and activity summaries.
@@ -45,13 +51,10 @@ public class DashboardController {
         this.codingSessionService = codingSessionService;
     }
 
-    /**
-     * Displays the main dashboard page with overall statistics.
-     * 
-     * @param userDetails current authenticated user details
-     * @param model       the model to be populated with dashboard data
-     * @return the dashboard view name
-     */
+    @Operation(summary = "Display the main dashboard page with overall statistics")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Dashboard data successfully retrieved", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @GetMapping
     public String showDashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.getUserByUsername(userDetails.getUsername())
@@ -71,15 +74,11 @@ public class DashboardController {
         return "dashboard/index";
     }
 
-    /**
-     * Provides detailed statistics for a specific date range.
-     * 
-     * @param userDetails current authenticated user details
-     * @param startDate   start of the date range
-     * @param endDate     end of the date range
-     * @param model       the model to be populated with detailed statistics
-     * @return the detailed statistics view
-     */
+    @Operation(summary = "Provide detailed statistics for a specific date range")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Detailed statistics successfully retrieved", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid date range", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @GetMapping("/stats")
     public String showDetailedStats(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -104,13 +103,10 @@ public class DashboardController {
         return "dashboard/detailed-stats";
     }
 
-    /**
-     * Provides project-specific statistics.
-     * 
-     * @param userDetails current authenticated user details
-     * @param model       the model to be populated with project statistics
-     * @return the project statistics view
-     */
+    @Operation(summary = "Provide project-specific statistics")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Project statistics successfully retrieved", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @GetMapping("/projects")
     public String showProjectStats(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.getUserByUsername(userDetails.getUsername())

@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 /**
  * Controller handling user registration and profile management.
  */
@@ -31,12 +37,18 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(summary = "Show the user registration form")
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
         return "users/register";
     }
 
+    @Operation(summary = "Register a new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid user data", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
         log.debug("Received registration request for username: {}", user.getUsername());
@@ -76,6 +88,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Show the user profile")
     @GetMapping("/profile")
     public String showProfile(Model model) {
         // To be implemented after adding authentication

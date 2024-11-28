@@ -23,6 +23,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 /**
  * Controller for managing coding sessions.
  * Handles web requests related to coding session management.
@@ -40,9 +46,11 @@ public class CodingSessionController {
         this.userService = userService;
     }
 
-    /**
-     * Shows detailed view of a specific session.
-     */
+    @Operation(summary = "Show detailed view of a specific coding session")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Coding session details successfully retrieved", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Coding session not found", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @GetMapping("/{id}")
     public String viewSession(@PathVariable Long id, Model model) {
         CodingSession rawSession = codingSessionService.getSession(id);
@@ -57,9 +65,11 @@ public class CodingSessionController {
         return "sessions/detail";
     }
 
-    /**
-     * Shows the list of user's coding sessions.
-     */
+    @Operation(summary = "Show the list of user's coding sessions")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Coding sessions successfully retrieved", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @GetMapping
     public String listSessions(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -85,18 +95,19 @@ public class CodingSessionController {
         return "sessions/list";
     }
 
-    /**
-     * Shows the form for starting a new session.
-     */
+    @Operation(summary = "Show the form for starting a new coding session")
     @GetMapping("/start")
     public String showStartForm(Model model) {
         model.addAttribute("newSession", new NewSessionRequest());
         return "sessions/start";
     }
 
-    /**
-     * Handles the submission of a new session.
-     */
+    @Operation(summary = "Start a new coding session")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Coding session started successfully", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid session data", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @PostMapping("/start")
     public String startSession(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -125,9 +136,11 @@ public class CodingSessionController {
         }
     }
 
-    /**
-     * Ends the current coding session.
-     */
+    @Operation(summary = "End the current coding session")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Coding session ended successfully", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Error ending session", content = @Content(mediaType = "text/html", schema = @Schema(implementation = String.class)))
+    })
     @PostMapping("/{id}/end")
     public String endSession(
             @PathVariable Long id,
@@ -144,5 +157,4 @@ public class CodingSessionController {
 
         return "redirect:/sessions";
     }
-
 }
