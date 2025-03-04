@@ -4,15 +4,16 @@ A comprehensive web application designed to help BIT (Business Information Techn
 
 ## Screenshots
 
-<div align="center">
-  <img src="./src/main/resources/static/images/screenshot1.png" alt="Login page" width="49%">
-  <img src="./src/main/resources/static/images/screenshot2.png" alt="Coding dashboard" width="49%">
-</div>
-
-<div align="center">
-  <img src="./src/main/resources/static/images/screenshot3.png" alt="Starting a new session" width="49%">
-  <img src="./src/main/resources/static/images/screenshot4.png" alt="Coding sessions" width="49%">
-</div>
+<table>
+  <tr>
+    <td width="50%"><img src="src/main/resources/static/images/screenshot1.png" alt="Dashboard View"></td>
+    <td width="50%"><img src="src/main/resources/static/images/screenshot2.png" alt="Session List"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="src/main/resources/static/images/screenshot3.png" alt="Session Details"></td>
+    <td width="50%"><img src="src/main/resources/static/images/screenshot4.png" alt="Project Statistics"></td>
+  </tr>
+</table>
 
 ## Features
 
